@@ -1,0 +1,75 @@
+{
+  "modules": [
+    {
+      "id": "m1",
+      "title": "TypeScript 语言核心",
+      "subtitle": "工具链 · 结构类型 · 泛型 · zod",
+      "dir": "m1",
+      "available": true,
+      "chapters": [
+        { "id": "ch01", "num": "01", "title": "世界地图 & 工具链 & 第一个带类型的函数", "runMode": "browser" },
+        { "id": "ch02", "num": "02", "title": "结构类型 vs 名义类型", "runMode": "browser" },
+        { "id": "ch03", "num": "03", "title": "联合、字面量、narrowing", "runMode": "browser" },
+        { "id": "ch04", "num": "04", "title": "泛型与工具类型", "runMode": "browser" },
+        { "id": "ch05", "num": "05", "title": "函数、模块、this、解构", "runMode": "browser" },
+        { "id": "ch06", "num": "06", "title": "Promise、async/await、错误", "runMode": "browser" },
+        { "id": "ch07", "num": "07", "title": "运行时校验：zod", "runMode": "browser" }
+      ]
+    },
+    {
+      "id": "m2",
+      "title": "背景知识",
+      "subtitle": "Event Loop · 包 · tsconfig · Stream",
+      "dir": "m2",
+      "available": true,
+      "chapters": [
+        { "id": "ch08", "num": "08", "title": "Event Loop", "runMode": "browser" },
+        { "id": "ch09", "num": "09", "title": "包与运行时", "runMode": "browser" },
+        { "id": "ch10", "num": "10", "title": "tsconfig 与声明文件", "runMode": "browser" },
+        { "id": "ch11", "num": "11", "title": "fetch、JSON、Stream 概念", "runMode": "browser" }
+      ]
+    },
+    {
+      "id": "m3",
+      "title": "Web 前端",
+      "subtitle": "组件心智 · React · Chat UI",
+      "dir": "m3",
+      "available": true,
+      "chapters": [
+        { "id": "ch12", "num": "12", "title": "组件化心智", "runMode": "browser" },
+        { "id": "ch13", "num": "13", "title": "React：组件、props、state 心智", "runMode": "browser" },
+        { "id": "ch14", "num": "14", "title": "hooks 心智", "runMode": "browser" },
+        { "id": "ch15", "num": "15", "title": "表单与列表（Chat UI 基础）", "runMode": "browser" },
+        { "id": "ch16", "num": "16", "title": "路由与数据获取心智", "runMode": "browser" }
+      ]
+    },
+    {
+      "id": "m4",
+      "title": "Web 后端",
+      "subtitle": "Hono · zod · SSE",
+      "dir": "local/m4",
+      "available": true,
+      "chapters": [
+        { "id": "ch17", "num": "17", "title": "Hono 第一个 API", "runMode": "local" },
+        { "id": "ch18", "num": "18", "title": "zod 校验路径 / 查询 / body", "runMode": "local" },
+        { "id": "ch19", "num": "19", "title": "中间件、CORS、错误处理", "runMode": "local" },
+        { "id": "ch20", "num": "20", "title": "轻量持久化", "runMode": "local" },
+        { "id": "ch21", "num": "21", "title": "SSE 流式响应", "runMode": "local" }
+      ]
+    },
+    {
+      "id": "m5",
+      "title": "用 Pi 做 Agent",
+      "subtitle": "pi-ai · agent-core · session · 接到网页",
+      "dir": "local/m5",
+      "available": true,
+      "chapters": [
+        { "id": "ch22", "num": "22", "title": "pi-ai：调模型 + 流式", "runMode": "local" },
+        { "id": "ch23", "num": "23", "title": "pi-agent-core：最小 Agent + Tool", "runMode": "local" },
+        { "id": "ch24", "num": "24", "title": "自定义 Tool 与事件", "runMode": "local" },
+        { "id": "ch25", "num": "25", "title": "createAgentSession", "runMode": "local" },
+        { "id": "ch26", "num": "26", "title": "打通：Hono + SSE + React 数据协议", "runMode": "local" }
+      ]
+    }
+  ]
+}
