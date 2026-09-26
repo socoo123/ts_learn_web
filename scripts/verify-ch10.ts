@@ -4,7 +4,7 @@
  */
 import chapter from "../src/content/chapters/ch10.json";
 import shared from "../src/content/shared.json";
-import { runFunctionTest } from "../src/lib/tsRunner";
+import { runFunctionTest } from "../assets/js/runner-core.js";
 import type { FuncDef, Section } from "../src/types";
 
 const parseCo = `function parseCompilerOptions(tsconfigJson: string): Record<string, unknown> {

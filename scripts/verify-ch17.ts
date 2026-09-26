@@ -9,7 +9,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import chapter from "../src/content/chapters/ch17.json";
 import shared from "../src/content/shared.json";
-import { runFunctionTest } from "../src/lib/tsRunner";
+import { runFunctionTest } from "../assets/js/runner-core.js";
 import type { FuncDef, Section } from "../src/types";
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");

@@ -70,6 +70,20 @@
         { "id": "ch25", "num": "25", "title": "createAgentSession", "runMode": "local" },
         { "id": "ch26", "num": "26", "title": "打通：Hono + SSE + React 数据协议", "runMode": "local" }
       ]
+    },
+    {
+      "id": "m6",
+      "title": "研究 Pi",
+      "subtitle": "仓库地图 · Agent 循环 · 扩展四件套 · Session · SDK vs RPC",
+      "dir": "local/m6",
+      "available": true,
+      "chapters": [
+        { "id": "ch27", "num": "27", "title": "仓库地图与四种运行模式", "runMode": "local" },
+        { "id": "ch28", "num": "28", "title": "Agent 循环怎么转（读 pi-agent-core）", "runMode": "local" },
+        { "id": "ch29", "num": "29", "title": "扩展四件套：Extension / Skill / Template / Package", "runMode": "local" },
+        { "id": "ch30", "num": "30", "title": "Session 与 Compaction", "runMode": "local" },
+        { "id": "ch31", "num": "31", "title": "SDK 嵌入 vs RPC", "runMode": "local" }
+      ]
     }
   ]
 }

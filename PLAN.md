@@ -16,9 +16,9 @@
 |---|---|
 | 语法 / 类型 / JS 背景 / React 前端 / Hono 后端 / Pi Agent | LeetCode、运维、Docker/K8s、教程 markdown 文件 |
 | 只做网页；作业在浏览器或本地跑测试 | 先写 md 再烘焙（Python 课那套） |
-| M1–M5 共 **26 章** | **M6 研究 Pi 整段暂停**（学完 M5 且用户明确说开再做） |
+| M1–M5 共 **26 章** + M6 共 **5 章**（**已完成**，2026-09-26） | 不 clone Pi 仓库当课程内容（读本机安装包 `node_modules/@earendil-works/pi-coding-agent` 内的 docs/dist 即可） |
 
-不重复 Python M5 的 LLM / Prompt / RAG / ReAct 原理。M5 只教 **Pi 的 TypeScript 写法**。
+不重复 Python M5 的 LLM / Prompt / RAG / ReAct 原理。M5 只教 **Pi 的 TypeScript 写法**；M6 教 **怎么读 Pi 本身**（仓库结构 / Agent 循环 / 扩展体系 / Session / 嵌入方式）。
 
 ---
 
@@ -55,17 +55,21 @@
 ### 3.1 仓库里有什么、没有什么
 
 ```
-ts_learn_web/                 ← 仓库根 = 站点入口（Vite + React + TS）
+ts_learn_web/                 ← 仓库根 = 站点根（双击 index.html 即用，零构建）
 ├── PLAN.md
 ├── AGENTS.md
+├── index.html              ← 生成：课程地图
+├── chapters/chNN.html      ← 生成：每章一页
+├── assets/                 ← css / js / vendor（Monaco、typescript、mermaid）
 ├── .cursor/rules/
-├── package.json
+├── package.json            ← 只服务脚本（bun test / mermaid 校验），看站不需要
 ├── src/
+│   ├── types.ts
 │   └── content/
 │       ├── index.json      ← 模块/章节目录
 │       ├── shared.json     ← mock 数据
 │       └── chapters/chXX.json
-├── scripts/                ← 生成/校验章节 JSON
+├── scripts/                ← 生成/校验章节 JSON；render-pages.ts 烘静态页
 └── local/                  ← 仅 Local 章的可运行 TS（Hono / Pi），无教程 md
 ```
 
@@ -115,8 +119,8 @@ ts_learn_web/                 ← 仓库根 = 站点入口（Vite + React + TS�
 
 ### 3.3 技术栈（搭站时按这个，生成内容时假定已有）
 
-- 站点：Vite + React + TS + Tailwind；主题护眼 / 德古拉（抄 Python 学习站）。
-- browser 运行：Monaco + 浏览器内 TypeScript 转译 + 自研 `expect()`（不引入 Pyodide）。
+- 站点：零构建静态多页。`src/content/*.json` 经 `bun scripts/render-pages.ts` 生成 `index.html` + `chapters/chNN.html`。日常双击 `index.html`（或 `启动学习站.command`）。主题护眼 / 德古拉。
+- browser 运行：本地 Monaco + `assets/js/vendor/typescript.js` 转译 + 自研 `expect()`（不引入 Pyodide）。file:// 下类型红线降级，编辑和判题仍可用。
 - M3 可加小组件预览窗。
 - 后端：Hono + zod + SQLite/drizzle（轻量）。
 - Agent：`@earendil-works/pi-ai` → `pi-agent-core` → `pi-coding-agent`（见 M5）。文档：https://pi.dev/docs/latest/sdk
@@ -133,9 +137,10 @@ ts_learn_web/                 ← 仓库根 = 站点入口（Vite + React + TS�
 4. 教程按 Python 课优化标准写（§5）：Java/Python 对照、真实场景、❌/✅、对应表、预览猜、费曼、闪卡。
 5. `sections` 按 H2 切开，`exerciseFunctions` 挂上。`interleaved: true`。
 6. 更新 `src/content/index.json` 该章标题（若还没有该条目，补上）。
-7. 更新本文件 §9 进度表该章为 ✅ 和日期。
-8. **不 git commit**（除非用户明确说提交）。
-9. **禁止生成 M6 / Ch27+**，除非用户明确说「M5 学完了，开 M6」或「开始研究 Pi」。
+7. 内容 JSON 有变就烘静态页：`bun scripts/render-pages.ts`（只改一章可加 `--chapter chNN`）。看站双击 `index.html`，不必 npm / vite。
+8. 更新本文件 §9 进度表该章为 ✅ 和日期。
+9. **不 git commit**（除非用户明确说提交）。
+10. **禁止生成 M6 / Ch27+**，除非用户明确说「M5 学完了，开 M6」或「开始研究 Pi」。
 
 用户说「重新优化 chNN」：同样 SOP，先对照 §5 诊断（≤10 行）再重写，不等确认。
 
@@ -183,7 +188,7 @@ ts_learn_web/                 ← 仓库根 = 站点入口（Vite + React + TS�
 
 ---
 
-## 6. 课程地图（现行：26 章 / 5 模块）
+## 6. 课程地图（现行：31 章 / 6 模块）
 
 | 模块 | id | 目录 | 章节 | runMode |
 |---|---|---|---|---|
@@ -192,9 +197,9 @@ ts_learn_web/                 ← 仓库根 = 站点入口（Vite + React + TS�
 | M3 Web 前端 | m3 | — | Ch12–16 | browser |
 | M4 Web 后端 | m4 | `local/m4/` | Ch17–21 | local |
 | M5 用 Pi 做 Agent | m5 | `local/m5/` | Ch22–26 | local |
-| M6 研究 Pi | — | — | **暂停，见 §8** | — |
+| M6 研究 Pi | m6 | `local/m6/` | Ch27–31 | local |
 
-`index.json` 的 `available`：M1–M5 为 `true`；不要加 M6 卡片。
+`index.json` 的 `available`：M1–M6 全为 `true`。M6 各章**无 `app.ts`**（研究章不建 HTTP 服务，真代码进 `demo.ts` 复制区）。
 
 ---
 
@@ -671,23 +676,129 @@ ts_learn_web/                 ← 仓库根 = 站点入口（Vite + React + TS�
 
 ---
 
-## 8. M6 研究 Pi · **整段暂停**
+# M6 · 研究 Pi（Ch27–Ch31）
 
-学完 M5 且用户明确说「开 M6 / 开始研究 Pi」之前：
+> 目标：从「会用 Pi 的 API」升级到「读得懂 Pi 本身」。事实源 = 本机安装包 `/opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent/` 内的 `docs/` 与 `dist/`（pi v0.85.x）+ https://pi.dev/docs/latest 。**不 clone 仓库、不新增 npm 依赖**；作业全部是纯函数（假数据测真机制），真 Pi 代码只进教程示例与各章 `demo.ts` 复制区（字符串 + `if (false)` 守护）。每章 local 三件套：`assignment.ts` / `assignment.test.ts` / `demo.ts`，**无 `app.ts`**。
 
-- **不要**生成 Ch27+ 内容
-- **不要**在 `index.json` 加第六张模块卡片
-- **不要**去 clone 当课程内容
+---
 
-将来（仅备忘，现在不实施）：
+## Ch27 · 仓库地图与四种运行模式
 
-| 章 | 标题 |
-|---|---|
-| 27 | 仓库地图与四种运行模式 |
-| 28 | Agent 循环怎么转（读 `pi-agent-core`） |
-| 29 | 扩展四件套：Extension / Skill / Template / Package |
-| 30 | Session 与 Compaction |
-| 31 | SDK 嵌入 vs RPC |
+**预计**：1 天 ｜ **前置**：Ch26 ｜ **runMode**：local
+
+**目标**：拿到一张 Pi 的「楼层图」——monorepo 四包各管什么、一条命令如何落进四种运行模式、配置与资源放哪；能自己在本机安装包里找到 docs / examples / dist 继续挖。
+
+**知识点**：`packages/ai|agent|tui|coding-agent` 职责；四模式 `tui` / `print` / `json-event` / `rpc`（`ctx.mode` 四值）；`~/.pi/agent/` 全局目录 vs 项目 `.pi/`；安装包内研究入口。
+
+**作业函数**（生成时冻结）：
+
+| 函数 | § | 知识点 |
+|---|---|---|
+| `packageRole` | §27.1 | monorepo 四包职责映射 |
+| `modeOfInvocation` | §27.2 | `-p` / `--mode rpc` / `--mode json` / 默认 → 四模式 |
+| `modeCapability` | §27.3 | 模式行为表：ctx.mode / hasUI / 交互能力 |
+| `pickRunMode` | §27.4 | 场景 → 选模式 |
+| `agentDirEntry` | §27.5 | `~/.pi/agent/` 下各文件/目录作用 |
+| `resourceScope` | §27.6 | 路径 → global / project 资源 |
+| `researchEntryPaths` | §27.7 | 定位安装包 docs / examples / dist（综合） |
+
+---
+
+## Ch28 · Agent 循环怎么转（读 pi-agent-core）
+
+**预计**：1 天 ｜ **前置**：Ch27 ｜ **runMode**：local
+
+**目标**：能口述 Agent 循环全流程（prompt → LLM 流 → 工具并行 → 结果追加 → 再调 LLM → 直到 `stopReason !== "toolUse"`）；分清事件嵌套层级；明白 steer / followUp 各在哪个缝隙投递、`agent_end` 和 `agent_settled` 差在哪。
+
+**知识点**：`Agent` / `AgentState`（messages、model、systemPrompt、tools、streamingMessage）；事件嵌套 agent_start ⊃ turn_start ⊃ message_* ⊃ tool_execution_*；`agent_end` 之后还可能 retry / compaction / follow-up，`agent_settled` 才是真停；steer=本轮工具跑完后、下次 LLM 调用前，followUp=agent 停止后。
+
+**作业函数**（生成时冻结）：
+
+| 函数 | § | 知识点 |
+|---|---|---|
+| `loopContinues` | §28.1 | `stopReason === "toolUse"` 且有 toolCalls → 继续 |
+| `nextPhase` | §28.2 | 当前状态 → 下一阶段（调 LLM / 执行工具 / 结束） |
+| `orderAgentEvents` | §28.3 | 事件嵌套顺序校验 |
+| `splitTurns` | §28.4 | 事件流按 turn 切分 |
+| `deliverQueuedAt` | §28.5 | steer / followUp 的投递缝隙 |
+| `agentStateAfter` | §28.6 | 不可变更新 state.messages |
+| `isSettled` | §28.7 | 尾事件 agent_settled 才算真停（综合） |
+
+---
+
+## Ch29 · 扩展四件套：Extension / Skill / Template / Package
+
+**预计**：1 天 ｜ **前置**：Ch28 ｜ **runMode**：local
+
+**目标**：分清四种扩展资源各自解决什么、放哪、怎么被加载；会读 SKILL.md frontmatter 和 Pi 包的 `pi` manifest；能写一个最小 extension 工厂（读懂即可，作业考解析与判断）。
+
+**知识点**：extension（默认导出工厂 `(pi: ExtensionAPI) => {}`、`pi.on` / `pi.registerTool` / `pi.registerCommand`、jiti 加载 TS、`/reload` 热重载）；skill（SKILL.md + frontmatter `name` / `description` / `allowed-tools` / `disable-model-invocation`，模型自发 vs `/skill:name`）；prompt template（`prompts/*.md` → 斜杠命令）；Pi package（`pi.{extensions,skills,prompts,themes}` manifest、`pi install npm:pkg@1.0.0` / `git:github.com/u/r`、settings.json `packages`）。
+
+**作业函数**（生成时冻结）：
+
+| 函数 | § | 知识点 |
+|---|---|---|
+| `extensionFactoryOk` | §29.1 | 代码字符串是否有 `export default` 工厂 |
+| `skillFromFrontmatter` | §29.2 | 解析 SKILL.md → {name, description}（缺 description 不加载） |
+| `skillInvocationMode` | §29.3 | `disable-model-invocation: true` → 仅 `/skill:name` |
+| `slashNamesFromDir` | §29.4 | prompts/*.md → 斜杠命令名 |
+| `resourceKindOf` | §29.5 | 路径 → extension/skill/prompt/theme |
+| `parseInstallSpec` | §29.6 | `npm:@scope/pkg@1.2.3` / `git:github.com/u/r@v1` → 来源+包名 |
+| `bundledResources` | §29.7 | `pi` manifest → 装完出现哪些资源（综合） |
+
+---
+
+## Ch30 · Session 与 Compaction
+
+**预计**：1 天 ｜ **前置**：Ch28 ｜ **runMode**：local
+
+**目标**：把「会话文件」当数据结构读：追加式树、entry 类型、活动分支；能手工推演一次 compaction 的触发与切点。
+
+**知识点**：session.jsonl（SessionHeader v3 + entries，`id`/`parentId` 链成树）；entry 类型（message / model_change / thinking_level_change / compaction / branch_summary / custom / custom_message / label / session_info）；SessionManager 树 API；compaction 触发式 `contextTokens > contextWindow - reserveTokens`（默认 16384）；切点：从新往回累积 `keepRecentTokens`（默认 20000）、只在 turn 边界切、**toolResult 永远不可切**；`CompactionEntry { summary, firstKeptEntryId, tokensBefore }`；split turn；分支摘要（公共祖先 + 被弃分支）；global+project settings 深合并与 `compaction.modelOverrides` 回退。
+
+**作业函数**（生成时冻结）：
+
+| 函数 | § | 知识点 |
+|---|---|---|
+| `shouldCompact` | §30.1 | 触发式（contextWindow − reserveTokens） |
+| `isValidCutPoint` | §30.2 | user/assistant/bashExecution/custom 可切，toolResult 不可 |
+| `findCutPoint` | §30.3 | 从新往回累积 token、turn 边界 → firstKeptEntryId |
+| `buildEntryTree` | §30.4 | id/parentId 数组 → 树 |
+| `pathToLeaf` | §30.5 | 根→叶活动分支 |
+| `contextAfterCompaction` | §30.6 | summary + firstKeptEntryId 之后的消息 = 下次发给 LLM 的 |
+| `mergeCompactionSettings` | §30.7 | 深合并 + modelOverrides 回退（综合） |
+
+---
+
+## Ch31 · SDK 嵌入 vs RPC
+
+**预计**：1 天 ｜ **前置**：Ch25、Ch27、Ch30 ｜ **runMode**：local
+
+**目标**：给「我的程序要嵌一个 Agent」选对集成方式：同进程 SDK（`createAgentSession`）vs 子进程 RPC（`pi --mode rpc` 的 stdin/stdout JSONL）vs json 事件流；能写出协议正确的最小 RPC 客户端。
+
+**知识点**：SDK：`createAgentSession` + `SessionManager.inMemory()` + `subscribe`；RPC：JSONL 命令（prompt/steer/follow_up/abort/get_state/compact/get_entries…）→ `{type:"response",success}` + 异步事件流 + `id` 关联；`success:true` 只代表「已接受」，失败走事件流；extension_ui_request/response 子协议；**LF-only 分帧**（只按 `\n` 切、剥尾部 `\r`；Node readline 会错切 U+2028/U+2029，官方点名不合规）；选型表（同进程类型安全 vs 进程隔离/跨语言）。
+
+**作业函数**（生成时冻结）：
+
+| 函数 | § | 知识点 |
+|---|---|---|
+| `pickIntegration` | §31.1 | 场景 → sdk / rpc / json |
+| `splitJsonl` | §31.2 | 正确分帧：只按 `\n`、剥尾部 `\r`、U+2028 不切 |
+| `encodeCommand` | §31.3 | 命令对象 → JSONL 行（含 id） |
+| `matchResponseTo` | §31.4 | 事件流里按 id 找对应 response |
+| `promptAcceptSemantics` | §31.5 | success:true=已接受；失败走事件流不二次 response |
+| `answerUiRequest` | §31.6 | extension_ui_request(select) → 应答帧 |
+| `sdkEquivalent` | §31.7 | RPC 命令 ↔ SDK 方法映射（综合） |
+
+---
+
+## 8. M6 研究 Pi · **已开（2026-09-15）**
+
+用户已明确说「写 M6」，暂停解除。本节原「不要生成 Ch27+」的禁令由以下约定取代：
+
+- 事实源以本机安装包（pi v0.85.x）内 `docs/` 与 `dist/` 为准 + https://pi.dev/docs/latest 交叉核对；**不 clone 仓库当课程内容**。
+- 不新增 npm 依赖；作业不 import `@earendil-works/*`（延续 M5 假数据模式）。
+- M6 各章 local 目录**无 `app.ts`**（研究章不建 HTTP 服务），真代码进 `demo.ts` 复制区。
 
 ---
 
@@ -723,7 +834,11 @@ ts_learn_web/                 ← 仓库根 = 站点入口（Vite + React + TS�
 | 24 | 自定义 Tool 与事件 | ✅ 2026-08-23 |
 | 25 | createAgentSession | ✅ 2026-08-23 |
 | 26 | 打通：Hono + SSE + React 数据协议 | ✅ 2026-08-23 |
-| 27–31 | M6 研究 Pi | ⏸ 暂停 |
+| 27 | 仓库地图与四种运行模式 | ✅ 2026-09-15 |
+| 28 | Agent 循环怎么转（读 pi-agent-core） | ✅ 2026-09-16 |
+| 29 | 扩展四件套：Extension / Skill / Template / Package | ✅ 2026-09-16 |
+| 30 | Session 与 Compaction | ✅ 2026-09-26 |
+| 31 | SDK 嵌入 vs RPC | ✅ 2026-09-26 |
 
 ### 9.1 分批生成记录
 
@@ -835,6 +950,31 @@ ts_learn_web/                 ← 仓库根 = 站点入口（Vite + React + TS�
 
 **进度**：26 / 26 章已生成。M1–M5 完成。M6（研究 Pi / Ch27+）整段暂停。
 
+#### 第 10 批 · 2026-09-15 起 · M6 研究 Pi（Ch27–Ch31，完成）
+
+M6 已开（用户 2026-09-15 明确说写 M6，暂停解除）。逐章生成，**每章 verify 全绿、§9 翻 ✅ 后再写下一章**。
+
+| 章 | JSON | 作业函数 | verify | 备注 |
+|---|---|---|---|---|
+| 27 | `src/content/chapters/ch27.json` | 7：`packageRole` `modeOfInvocation` `modeCapability` `pickRunMode` `agentDirEntry` `resourceScope` `researchEntryPaths` | all green 2026-09-15 | **M6 样板章**；四包 / 四模式 / 目录地图 / 作用域 |
+| 28 | `src/content/chapters/ch28.json` | 7：`loopContinues` `nextPhase` `orderAgentEvents` `splitTurns` `deliverQueuedAt` `agentStateAfter` `isSettled` | all green 2026-09-16 | 双层 while / 事件嵌套 / steer·followUp 三缝隙 / agent_end vs agent_settled；事实源 = 本机 pi-agent-core dist + docs/sdk.md |
+| 29 | `src/content/chapters/ch29.json` | 7：`extensionFactoryOk` `skillFromFrontmatter` `skillInvocationMode` `slashNamesFromDir` `resourceKindOf` `parseInstallSpec` `bundledResources` | all green 2026-09-16 | 扩展四件套；默认导出工厂 / jiti、SKILL.md frontmatter 与渐进披露、disable-model-invocation、prompts→斜杠命令（non-recursive）、路径四类归属、install spec 两个 @ 坑、pi manifest vs 约定目录；事实源 = 本机 docs/extensions.md · skills.md · prompt-templates.md · packages.md |
+| 30 | `src/content/chapters/ch30.json` | 7：`shouldCompact` `isValidCutPoint` `findCutPoint` `buildEntryTree` `pathToLeaf` `contextAfterCompaction` `mergeCompactionSettings` | all green 2026-09-26 | 追加式树 / 触发式严格大于 / toolResult 不可切 / split turn / summary+firstKeptEntryId；v0.85.1 compaction 只有三键，contextWindow 回退走 models.json 的 modelOverrides；事实源 = docs/session-format.md · compaction.md · sessions.md · settings.md + dist compaction.js |
+| 31 | `src/content/chapters/ch31.json` | 7：`pickIntegration` `splitJsonl` `encodeCommand` `matchResponseTo` `promptAcceptSemantics` `answerUiRequest` `sdkEquivalent` | all green 2026-09-26 | SDK / RPC / json 选型；LF-only 分帧（U+2028/U+2029 不切）；success true = 已接受；select 应答帧；get_state 无同名方法。M6 收官。事实源 = docs/sdk.md · rpc.md · json.md |
+
+**M6 生成约定（Ch28–31 必须照此；样板 = ch27 的 JSON + `scripts/gen-ch27.ts` + `scripts/verify-ch27.ts`）**：
+
+1. 事实源：本机安装包 `<npm root -g>/@earendil-works/pi-coding-agent/`（pi v0.85.x）内 `docs/*.md` 与 `dist/`，+ https://pi.dev/docs/latest 交叉核对。写教程前**先读本机 docs 对应页**，不凭记忆编 API。
+2. local 三件套：`assignment.ts` / `assignment.test.ts` / `demo.ts`。**无 `app.ts`**（研究章不建 HTTP 服务；真 Pi 代码进 `demo.ts` 复制区：模板字符串 + `if (false)` 守护，去字符串后不得有真 fetch/import）。
+3. 作业纯函数、无 Key 可跑、不用 zod → local `assignment.ts` **无任何 import**（与 m4/m5 不同）。
+4. 每章 7 函数 = §NN.1–§NN.7 七个练习节（一节一函数，heading 带 `§NN.x` + 反引号函数名 + 🔴/🟡/🟢）；16–18 节骨架照 ch27（intro / map+对应表 / path / guess / world+机制 / 7 练习节 / pits / homework / check / feynman / next）。
+5. mermaid 5–8 张；每条 style 带 `color:#1f1f1f`；节点特殊字符双引号；`<br/>` 换行可用（旧章有先例）。节点 id **不得用 mermaid 关键字**（`call`/`click`/`class`/`style`/`default`/`end` 等，Ch29 曾因 `call` 当 id 在 11.17.0 报 Syntax error）；生成后跑 `node scripts/check-mermaid.mjs src/content/chapters/chNN.json` 全 OK（raw 与 flat 两种）再翻 ✅。商品铺 mock（KB-001/MS-002/无线鼠标）贯穿。
+6. verify 与 ch26 版差异：`localHint: "bun test local/m6/chNN"`；local 检查三文件并**断言无 app.ts**；**新增**「tutorialMd 与 sections 重拼逐字符一致」检查；不检查 zod import。
+7. 完成每章：`bun scripts/gen-chNN.ts` → `bun scripts/verify-chNN.ts` 全绿 → `index.json` m6 卡片**追加**该章条目（卡片随生成长）→ `bun scripts/render-pages.ts --chapter chNN` → 本表更新 → §9 进度翻 ✅。不 git commit。
+8. 教程里「下一步」按 §7 大纲预告后一章；Ch31 是 M6 收官（next 指向「课程完结」）。
+
+**进度**：5 / 5（Ch27 ✅ 2026-09-15、Ch28 ✅ 2026-09-16、Ch29 ✅ 2026-09-16、Ch30 ✅ 2026-09-26、Ch31 ✅ 2026-09-26）。M6 收官。
+
 #### 样板 · 2026-08-25 · Ch02 原理 + mermaid
 
 对照 §5「原理与图」。只改 `src/content/chapters/ch02.json` 教程正文（`tutorialMd` + `sections`），作业/测试未动。7 张 mermaid 关系图，语法渲染全绿。后续章已按此密度补完（§9.2）；不要重跑会覆盖样板的 `scripts/gen-ch02.ts`。
@@ -863,7 +1003,7 @@ ts_learn_web/                 ← 仓库根 = 站点入口（Vite + React + TS�
 - 不生成 LeetCode / 算法刷题章
 - 不生成运维、Docker、K8s、CI 章
 - 不写各章 `tutorial.md` 文件
-- 不把 M6 当现行大纲
+- M6 事实以本机安装包 docs/dist 为准，不编造 API、不 clone 仓库当内容
 - 不在 browser 章引入 Pi / Hono / sqlite
-- 不在 M5 作业中开放任意 `bash`
+- 不在 M5/M6 作业中开放任意 `bash`
 - 不主动 git commit / push
